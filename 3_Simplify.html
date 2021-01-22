@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Assignment 3 - B1</title>
+		<link rel="stylesheet" href="style.css">
+	</head>
+	<body>
+		<script src="js/parallel.js"></script>
+		<script src="js/three.js"></script>
+		<script src="js/OrbitControls.js"></script>
+		<script src="js/BufferGeometryUtils.js"></script>
+		<script src="Data.js"></script>
+		<script src="Geometry.js"></script>
+		<script src="Render.js"></script>
+		<script src="Lindenmayer.js"></script>
+		<script src="js/MainInit.js"></script>
+		<script>
+			const data = LSystem.Data.SmallTree;
+
+			const grammar = LSystem.Lindenmayer.iterateGrammar(data.str, data.dict, data.iters);
+			const nodeTree = LSystem.Geometry.generateSkeleton(grammar, data.theta, data.alpha, data.decay);
+			
+			LSystem.Render.drawTreeNodes(nodeTree, scene, 0xff0000, 0.04);
+			LSystem.Geometry.simplifySkeleton(nodeTree);
+			LSystem.Render.drawTreeNodes(nodeTree, scene);
+			LSystem.Render.drawTreeSkeleton(nodeTree, scene, 0x6A6A6A);
+		</script>
+	</body>
+</html>

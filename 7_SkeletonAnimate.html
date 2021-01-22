@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Assignment 3 - D1</title>
+		<link rel="stylesheet" href="style.css">
+	</head>
+	<body>
+		<script src="js/parallel.js"></script>
+		<script src="js/three.js"></script>
+		<script src="js/OrbitControls.js"></script>
+		<script src="js/BufferGeometryUtils.js"></script>
+		<script src="Data.js"></script>
+		<script src="Geometry.js"></script>
+		<script src="Render.js"></script>
+		<script src="Lindenmayer.js"></script>
+		<script src="Physics.js"></script>
+		<script src="js/MainInitStatic.js"></script>
+		<script>
+			const data = LSystem.Data.SmallTree;
+			const dt = 0.01;
+			const [treeGeom, nodeTree] = generateTree();
+			
+			function generateTree() {
+				const grammar = LSystem.Lindenmayer.iterateGrammar(data.str, data.dict, data.iters - 1);
+				const nodeTree = LSystem.Geometry.generateSkeleton(grammar, data.theta, data.alpha, data.decay);
+				LSystem.Geometry.simplifySkeleton(nodeTree);
+				LSystem.Physics.initTree(nodeTree);
+				return [LSystem.Render.drawTreeSkeleton(nodeTree, scene), nodeTree];
+			}
+/*
+			for(var i=0; i<2;i++){
+				var timeS = (new Date().getTime()) / 1000;
+				LSystem.Physics.applyForces(nodeTree, dt, timeS);
+				LSystem.Render.updateTreeSkeleton(treeGeom.attributes.position.array, nodeTree);
+				treeGeom.attributes.position.needsUpdate = true;
+				renderer.render(scene, camera);
+			}
+
+*/
+
+
+			function animate() {
+				requestAnimationFrame(animate);
+				var timeS = (new Date().getTime()) / 1000;
+				LSystem.Physics.applyForces(nodeTree, dt, timeS);
+				LSystem.Render.updateTreeSkeleton(treeGeom.attributes.position.array, nodeTree);
+				treeGeom.attributes.position.needsUpdate = true;
+				renderer.render(scene, camera);
+			}
+			animate();
+
+
+
+		</script>
+	</body>
+</html>

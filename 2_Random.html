@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Assignment 3 - A2</title>
+		<link rel="stylesheet" href="style.css">
+	</head>
+	<body>
+		<script src="js/parallel.js"></script>
+		<script src="js/three.js"></script>
+		<script src="js/OrbitControls.js"></script>
+		<script src="js/BufferGeometryUtils.js"></script>
+		<script src="Data.js"></script>
+		<script src="Geometry.js"></script>
+		<script src="Render.js"></script>
+		<script src="Lindenmayer.js"></script>
+		<script src="js/MainInit.js"></script>
+		<script>
+			camera.position.z = 20;
+			controls.update();
+			
+			const data = LSystem.Data.SmallTree;
+			const iters = 5;
+			generateTrees();
+			
+			function generateTrees() {
+				for (let i=0; i<10; i++) {
+					const grammar = LSystem.Lindenmayer.iterateGrammarProb(data.str, data.dict, iters);
+					const nodeTree = LSystem.Geometry.generateSkeleton(grammar, data.theta, data.alpha, data.decay);
+					const translationMatrix = new THREE.Matrix4().makeTranslation((i - 4.5)*4, 0, 0);
+					LSystem.Render.drawTreeSkeleton(nodeTree, scene, 0xffffff, translationMatrix);
+				}
+			}
+			
+			function onDocumentKeyDown(event) {
+				var keyCode = event.which;
+				if (keyCode == 32) {
+					clearScene();
+					generateTrees();
+				}
+			}
+			document.addEventListener("keydown", onDocumentKeyDown, false);
+		</script>
+	</body>
+</html>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Assignment 3 - C2</title>
+		<link rel="stylesheet" href="style.css">
+	</head>
+	<body>
+		<script src="js/parallel.js"></script>
+		<script src="js/three.js"></script>
+		<script src="js/OrbitControls.js"></script>
+		<script src="js/BufferGeometryUtils.js"></script>
+		<script src="Data.js"></script>
+		<script src="Geometry.js"></script>
+		<script src="Render.js"></script>
+		<script src="Lindenmayer.js"></script>
+		<script src="js/MainInit.js"></script>
+		<script src="js/WorldInit.js"></script>
+		<script>
+			const data = LSystem.Data.SmallTree;
+			const lengthDivisions = 4;
+			const radialDivisions = 5;
+			generateTree();
+
+			function generateTree() {
+				const grammar = LSystem.Lindenmayer.iterateGrammarProb(data.str, data.dict, data.iters);
+				const nodeTree = LSystem.Geometry.generateSkeleton(grammar, data.theta, data.alpha, data.decay);
+				LSystem.Geometry.generateSegmentsHermite(nodeTree, lengthDivisions, radialDivisions);
+				LSystem.Render.drawTreeHermite(nodeTree, scene, data.alpha);
+			}
+			
+			function onDocumentKeyDown(event) {
+				var keyCode = event.which;
+				if (keyCode == 32) {
+					clearScene();
+					createWorld(scene);
+					generateTree();
+				}
+			}
+			document.addEventListener("keydown", onDocumentKeyDown, false);
+		</script>
+	</body>
+</html>
